@@ -1,0 +1,2 @@
+djangorestframework==3.12.1
+python==3.6.8
