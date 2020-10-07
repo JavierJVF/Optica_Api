@@ -29,15 +29,35 @@ class UserViewSet(viewsets.ModelViewSet):
 	serializer_class = UserSerializer
 
 	def create(self, request, *args, **kwargs):
-		_mutable = request.data._mutable
-		request.data._mutable = True
-		request.data['password'] = make_password(request.data['password'])
+		data = request.data.copy()
+		#request.data._mutable = True
+		data['password'] = make_password(data['password'])
 
 		# set mutable flag back
-		request.data._mutable = _mutable
-		serializer = self.get_serializer(data=request.data)
+		#request.data._mutable = _mutable
+
+		serializer = self.get_serializer(data=data)
+
 		serializer.is_valid(raise_exception=True)
 		#serializer.data['password'] = make_password(serializer.data['password'])
 		self.perform_create(serializer)
 		headers = self.get_success_headers(serializer.data)
 		return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class LoginViewSet(viewsets.ModelViewSet):
+	queryset = User.objects.all()
+	serializer_class = UserSerializer
+
+	def create(self, request, *args, **kwargs):
+		password = request.POST.get('password')
+		username = request.POST.get('username')
+		
+		user = User.objects.get(username=username)
+		data = {'id':user.id, 'username':user.username, 'password':user.password,'email':user.email,'first_name':user.first_name,'last_name':user.last_name,'is_staff':user.is_staff}
+		if user.check_password(password):
+			#serializer = self.get_serializer(data=data)
+			#serializer.is_valid(raise_exception=True)
+			#headers = self.get_success_headers(serializer.data)
+			return Response(data, status=status.HTTP_201_CREATED)
+		else:
+			return Response({'detail':'username o password incorrectos'}, status=status.HTTP_404_NOT_FOUND)
