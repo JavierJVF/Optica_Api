@@ -28,10 +28,3 @@ class UserSerializer(serializers.ModelSerializer):
 		fields = ['id', 'username', 'password', 'email', 'first_name', 'last_name',]
 		write_only_fields = ('password',)
 		read_only_fields = ('id',)
-
-		def create(self, validated_data):
-			user = super(UserSerializer, self).create(validated_data)
-			if 'password' in validated_data:
-				user.set_password(validated_data['password'])
-				user.save()
-			return user
