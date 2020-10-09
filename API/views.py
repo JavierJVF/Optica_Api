@@ -42,6 +42,23 @@ class UserViewSet(viewsets.ModelViewSet):
 		self.perform_create(serializer)
 		headers = self.get_success_headers(serializer.data)
 		return Response(serializer.data, status=status.HTTP_201_CREATED)
+	
+	def update(self, request, *args, **kwargs):
+		dataU = request.data.copy()
+
+
+		instance = self.get_object()
+		
+		if instance:
+			password = make_password(instance.password)
+			data = {'id':instance.id, 'username':dataU['username'], 'password':password,'email':dataU['email'],'first_name':dataU['first_name'],'last_name':dataU['last_name'],'is_staff':dataU['is_staff']}
+			serializer = self.get_serializer(instance,data=data)
+			serializer.is_valid(raise_exception=True)
+			self.perform_update(serializer)
+			headers = self.get_success_headers(serializer.data)
+			return Response(serializer.data, status=200)
+		else:
+			return Response({'detail':'usuario no existe'}, status=status.HTTP_404_NOT_FOUND)	
 
 class LoginViewSet(viewsets.ModelViewSet):
 	queryset = User.objects.all()
