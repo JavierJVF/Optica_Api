@@ -27,4 +27,4 @@ class Ventas(models.Model):
 	fechaCompra = models.DateField(auto_now_add=True)
 	CantidadDeUnidades = models.IntegerField()
 	idProduct = models.ForeignKey(Product, on_delete=models.CASCADE)
-	idUserrAccount = models.ForeignKey(UserAccount, on_delete=models.CASCADE)
+	idUserrAccount = models.ForeignKey(User, on_delete=models.CASCADE)
