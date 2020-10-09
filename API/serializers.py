@@ -24,7 +24,7 @@ class VentasSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Ventas
-		fields = ['id', 'fechaCompra', 'CantidadDeUnidades', 'idProduct', 'idUserrAccount',]
+		fields = ['id', 'fechaCompra', 'CantidadDeUnidades','precioTotal', 'idProduct', 'idUserrAccount',]
 
 class UserSerializer(serializers.ModelSerializer):
 
