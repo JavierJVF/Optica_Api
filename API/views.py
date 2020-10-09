@@ -8,6 +8,18 @@ from django.http import Http404
 #import requests
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
+from .serializers import BookSerializer
+from .models import Book
+
+class BookViewSet(viewsets.ModelViewSet):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+
+    def post(self, request, *args, **kwargs):
+        cover = request.data['cover']
+        title = request.data['title']
+        Book.objects.create(title=title, cover=cover)
+        return HttpResponse({'message': 'Book created'}, status=200)
 
 class ProductViewSet(viewsets.ModelViewSet):
 	queryset = Product.objects.all()

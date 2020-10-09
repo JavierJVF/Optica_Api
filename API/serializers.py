@@ -1,12 +1,17 @@
-from .models import Product, UserAccount, Ventas
+from .models import Product, UserAccount, Ventas, Book
 from rest_framework import serializers
 from django.contrib.auth.models import User
+
+class BookSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Book
+        fields = ['title', 'cover']
 
 class ProductSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Product
-		fields = ['id', 'nombre', 'modelo', 'marca', 'descripcion', 'precio', 'stock',]
+		fields = ['id', 'nombre', 'modelo', 'marca', 'descripcion', 'precio', 'stock', 'cover']
 
 class UserAccountSerializer(serializers.ModelSerializer):
 
