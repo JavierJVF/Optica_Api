@@ -39,7 +39,6 @@ class UserViewSet(viewsets.ModelViewSet):
 		serializer = self.get_serializer(data=data)
 
 		serializer.is_valid(raise_exception=True)
-		#serializer.data['password'] = make_password(serializer.data['password'])
 		self.perform_create(serializer)
 		headers = self.get_success_headers(serializer.data)
 		return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -61,3 +60,26 @@ class LoginViewSet(viewsets.ModelViewSet):
 			return Response(data, status=status.HTTP_201_CREATED)
 		else:
 			return Response({'detail':'username o password incorrectos'}, status=status.HTTP_404_NOT_FOUND)
+
+class PasswordViewSet(viewsets.ModelViewSet):
+	queryset = User.objects.all()
+	serializer_class = UserSerializer
+
+	def update(self, request, *args, **kwargs):
+		dataU = request.data.copy()
+
+		passwordOld = dataU['passwordOld']
+		passwordNew = dataU['passwordNew']
+		instance = self.get_object()
+		user = self.get_object()
+		
+		if user.check_password(passwordOld):
+			user.password = make_password(passwordNew)
+			data = {'id':user.id, 'username':user.username, 'password':user.password,'email':user.email,'first_name':user.first_name,'last_name':user.last_name,'is_staff':user.is_staff}
+			serializer = self.get_serializer(instance,data=data)
+			serializer.is_valid(raise_exception=True)
+			self.perform_update(serializer)
+			headers = self.get_success_headers(serializer.data)
+			return Response(serializer.data, status=200)
+		else:
+			return Response({'detail':'password incorrecto'}, status=status.HTTP_404_NOT_FOUND)			
