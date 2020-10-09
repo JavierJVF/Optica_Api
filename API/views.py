@@ -65,8 +65,11 @@ class LoginViewSet(viewsets.ModelViewSet):
 	serializer_class = UserSerializer
 
 	def create(self, request, *args, **kwargs):
-		password = request.POST.get('password')
-		username = request.POST.get('username')
+		
+		data = request.data.copy()
+
+		password = data['password']
+		username = data['username']
 		
 		user = User.objects.get(username=username)
 		data = {'id':user.id, 'username':user.username, 'password':user.password,'email':user.email,'first_name':user.first_name,'last_name':user.last_name,'is_staff':user.is_staff}
